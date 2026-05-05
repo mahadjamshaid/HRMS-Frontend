@@ -34,21 +34,16 @@ export type AttendanceRecordsPage = {
   totalRecords?: number;
 };
 
-export type AdminManualEntryPayload = {
+export type AttendanceCorrectionPayload = {
   employeeId: number;
   date: string;
   checkInTime?: string | null;
   checkOutTime?: string | null;
-  status?: AttendanceStatus;
+  adminStatus?: "Absent" | "OnLeave";
+  reason?: string;
 };
 
 export type EmployeeCheckInPayload = {
-  status?: AttendanceStatus;
-};
-
-export type UpdateAttendancePayload = {
-  checkInTime?: string | null;
-  checkOutTime?: string | null;
   status?: AttendanceStatus;
 };
 

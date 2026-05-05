@@ -2,19 +2,15 @@ import React, { useEffect, useState } from "react";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
-import { useUpdateAttendance } from "../hooks/useUpdateAttendance";
+import { useCorrectAttendance } from "../hooks/useCorrectAttendance";
 import { formatForDateTimeLocal } from "../../../utils/dateUtils";
 import type { ChangeEvent, FormEvent } from "react";
-import type { AttendanceStatus, EditAttendanceModalProps, UpdateAttendancePayload } from "../../../types/attendanceTypes";
+import type { AttendanceCorrectionPayload, EditAttendanceModalProps } from "../../../types/attendanceTypes";
 
 type EditAttendanceForm = {
   checkInTime: string;
   checkOutTime: string;
-  status: "" | AttendanceStatus;
-};
-
-const isManualAttendanceStatus = (status: EditAttendanceForm["status"]): status is NonNullable<UpdateAttendancePayload["status"]> => {
-  return status === "Absent" || status === "OnLeave";
+  adminStatus: "" | "Absent" | "OnLeave";
 };
 
 const EditAttendanceModal = ({
@@ -23,12 +19,12 @@ const EditAttendanceModal = ({
   record,
   onSuccess,
 }: EditAttendanceModalProps) => {
-  const { update, loading, error } = useUpdateAttendance();
+  const { correct, loading, error } = useCorrectAttendance();
   const [localError, setLocalError] = useState<string | null>(null);
   const [form, setForm] = useState<EditAttendanceForm>({
     checkInTime: "",
     checkOutTime: "",
-    status: "",
+    adminStatus: "",
   });
 
   useEffect(() => {
@@ -38,7 +34,7 @@ const EditAttendanceModal = ({
       setForm({
         checkInTime: formatForDateTimeLocal(record.checkInTime),
         checkOutTime: formatForDateTimeLocal(record.checkOutTime),
-        status: record.status || "",
+        adminStatus: (record.status === "Absent" || record.status === "OnLeave") ? record.status : "",
       });
       setLocalError(null);
     }, 0);
@@ -52,7 +48,7 @@ const EditAttendanceModal = ({
         setForm({
           checkInTime: "",
           checkOutTime: "",
-          status: "",
+          adminStatus: "",
         });
       }, 0);
 
@@ -71,34 +67,32 @@ const EditAttendanceModal = ({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Clean the payload: only send fields that are present
-    const payload: UpdateAttendancePayload = {};
-    
-    if (form.checkInTime) {
-      payload.checkInTime = new Date(form.checkInTime).toISOString();
-    }
-    
-    if (form.checkOutTime) {
-      payload.checkOutTime = new Date(form.checkOutTime).toISOString();
-    }
-    
-    if (isManualAttendanceStatus(form.status)) {
-      payload.status = form.status;
+    if (!record?.employeeId || !record?.attendanceDate) {
+        setLocalError("Missing employee or date context");
+        return;
     }
 
-    if (!record?.id) {
-    setLocalError("Cannot edit absent record. Please check-in first.");
-    return;
-    }
+    // Construct unified correction payload (STRICT: no 'status' field)
+    const payload: AttendanceCorrectionPayload = {
+        employeeId: record.employeeId,
+        date: record.attendanceDate,
+        checkInTime: form.checkInTime ? new Date(form.checkInTime).toISOString() : null,
+        checkOutTime: form.checkOutTime ? new Date(form.checkOutTime).toISOString() : null,
+        adminStatus: form.adminStatus || undefined,
+    };
+    
+    // Safety check: filter out empty strings before they become "Invalid Date"
+    if (form.checkInTime === "") payload.checkInTime = null;
+    if (form.checkOutTime === "") payload.checkOutTime = null;
 
-    const res = await update(record.id, payload);
+    const res = await correct(payload);
 
     if (res?.success) {
-    onSuccess();
-    onClose();
-  } else {
-    setLocalError(res?.error || "Update failed");
-  }
+        onSuccess();
+        onClose();
+    } else {
+        setLocalError(res?.error || "Correction failed");
+    }
 };
 
   return (
@@ -124,7 +118,7 @@ const EditAttendanceModal = ({
             name="checkInTime"
             value={form.checkInTime}
             onChange={handleChange}
-            disabled={form.status === "Absent"}
+            disabled={form.adminStatus === "Absent"}
           />
 
           <Input
@@ -133,25 +127,25 @@ const EditAttendanceModal = ({
             name="checkOutTime"
             value={form.checkOutTime}
             onChange={handleChange}
-            disabled={form.status === "Absent"}
+            disabled={form.adminStatus === "Absent"}
           />
 
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
-                Status Mode
+                Status Mode (Administrative Override)
             </label>
             <select
-              name="status"
-              value={form.status}
+              name="adminStatus"
+              value={form.adminStatus}
               onChange={handleChange}
               className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none appearance-none"
             >
-              <option value="">Auto (Present/Late)</option>
-              <option value="Absent">Absent</option>
-              <option value="OnLeave">OnLeave</option>
+              <option value="">Auto (System Policy)</option>
+              <option value="Absent">Force Absent</option>
+              <option value="OnLeave">Force OnLeave</option>
             </select>
             <p className="text-[10px] font-bold text-slate-400 px-1">
-                Selecting "Absent" will wipe all check-in/out times.
+                Overrides will bypass automated policy rules.
             </p>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { adminManualEntry } from "../../features/attendance/api/attendance.api";
 import { useAdminAttendanceRecords } from "../../features/attendance/hooks/useAdminAttendanceRecords";
 import { useAdminAttendanceSummary } from "../../features/attendance/hooks/useAdminAttendanceSummary";
 import AttendanceViewAdmin from "../../features/attendance/components/AttendanceView.admin";
@@ -11,8 +10,6 @@ import Button from "../../components/Button";
 import type { FormEvent } from "react";
 import type {
     AttendanceRecord,
-    ManualAttendanceEntry,
-    AdminManualEntryPayload,
 } from "../../types/attendanceTypes";
 
 const AttendancePage = () => {
@@ -24,12 +21,6 @@ const AttendancePage = () => {
     const [attendancePage, setAttendancePage] = useState(1);
     
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [manualEntry, setManualEntry] = useState<ManualAttendanceEntry>({
-        employeeId: "",
-        actionType: "checkIn", // Legacy UI state, we'll map this
-        time: ""
-    });
-
     const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -37,36 +28,16 @@ const AttendancePage = () => {
         fetchRecords(attendancePage, 10, dateFilter, statusFilter);
     }, [attendancePage, dateFilter, statusFilter, fetchRecords]);
 
-    const handleManualSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const payload: AdminManualEntryPayload = {
-                employeeId: Number(manualEntry.employeeId),
-                date: manualEntry.time ? manualEntry.time.split('T')[0] : new Date().toISOString().split('T')[0],
-                checkInTime: manualEntry.actionType === "checkIn" ? manualEntry.time : null,
-                checkOutTime: manualEntry.actionType === "checkOut" ? manualEntry.time : null,
-            };
-            
-            await adminManualEntry(payload);
-            setIsModalOpen(false);
-            setManualEntry({ employeeId: "", actionType: "checkIn", time: "" });
-            fetchRecords(attendancePage, 10, dateFilter, statusFilter);
-            fetchSummary();
-        } catch (error) {
-            console.error("Failed to manual entry:", error);
-            alert("Error recording manual entry");
-        }
-    };
-
     const handleRowClick = (record: AttendanceRecord) => {
         setSelectedRecord(record);
         setIsEditModalOpen(true);
     };
 
-    const handleEditSuccess = () => {
+    const handleCorrectionSuccess = () => {
         fetchRecords(attendancePage, 10, dateFilter, statusFilter);
         fetchSummary();
         setIsEditModalOpen(false);
+        setIsModalOpen(false);
         setSelectedRecord(null);
     };
 
@@ -130,15 +101,13 @@ const AttendancePage = () => {
             <ManualEntryModal 
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                manualEntry={manualEntry}
-                setManualEntry={setManualEntry}
-                handleManualSubmit={handleManualSubmit}
+                onSuccess={handleCorrectionSuccess}
             />
             <EditAttendanceModal 
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
                 record={selectedRecord}
-                onSuccess={handleEditSuccess}
+                onSuccess={handleCorrectionSuccess}
             />
         </div>
     );

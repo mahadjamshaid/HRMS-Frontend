@@ -1,20 +1,20 @@
 import { useState } from "react";
-import { updateAttendance } from "../api/attendance.api";
-import type { UpdateAttendancePayload, UpdateAttendanceResult } from "../../../types/attendanceTypes";
+import { correctAttendance } from "../api/attendance.api";
+import type { AttendanceCorrectionPayload, UpdateAttendanceResult } from "../../../types/attendanceTypes";
 
-export const useUpdateAttendance = () => {
+export const useCorrectAttendance = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const update = async (id: number, payload: UpdateAttendancePayload): Promise<UpdateAttendanceResult> => {
+  const correct = async (payload: AttendanceCorrectionPayload): Promise<UpdateAttendanceResult> => {
     setLoading(true);
     setError(null);
 
     try {
-      const res = await updateAttendance(id, payload);
+      const res = await correctAttendance(payload);
 
       if (!res.ok) {
-        const errorMsg = res.error || res.message || "Update failed";
+        const errorMsg = res.error || res.message || "Correction failed";
         setError(errorMsg);
 
         return {
@@ -28,7 +28,6 @@ export const useUpdateAttendance = () => {
         success: true,
         data: res.data,
         error: null
-        
       };
     } catch {
       const errorMsg = "Network error occurred";
@@ -44,7 +43,7 @@ export const useUpdateAttendance = () => {
   };
 
   return {
-    update,
+    correct,
     loading,
     error,
   };

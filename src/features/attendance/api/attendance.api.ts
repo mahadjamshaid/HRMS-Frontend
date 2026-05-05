@@ -1,19 +1,18 @@
 import { attendanceService } from "./attendance.service";
 import type {
   AdminAttendanceSummary,
-  AdminManualEntryPayload,
   AttendanceApiResponse,
+  AttendanceCorrectionPayload,
   AttendanceRecord,
   AttendanceRecordsPage,
   EmployeeCheckInPayload,
-  UpdateAttendancePayload,
 } from "../../../types/attendanceTypes";
 
 /**
  * ADMIN ATTENDANCE METHODS
  */
-export const adminManualEntry = async (data: AdminManualEntryPayload): Promise<AttendanceApiResponse<AttendanceRecord>> => {
-  return attendanceService.post<AttendanceRecord, AdminManualEntryPayload>("/attendance/admin/manual-entry", data);
+export const correctAttendance = async (data: AttendanceCorrectionPayload): Promise<AttendanceApiResponse<AttendanceRecord>> => {
+  return attendanceService.post<AttendanceRecord, AttendanceCorrectionPayload>("/attendance/correct", data);
 };
 
 export const getAttendanceSummary = async (): Promise<AttendanceApiResponse<AdminAttendanceSummary>> => {
@@ -52,12 +51,6 @@ export const getAllAttendance = async (
   return attendanceService.get<AttendanceRecordsPage>(url);
 };
 
-export const updateAttendance = async (
-  id: number,
-  data: UpdateAttendancePayload
-): Promise<AttendanceApiResponse<AttendanceRecord>> => {
-  return attendanceService.put<AttendanceRecord, UpdateAttendancePayload>(`/attendance/${id}`, data);
-};
 
 /**
  * EMPLOYEE ATTENDANCE METHODS
