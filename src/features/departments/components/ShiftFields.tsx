@@ -37,22 +37,17 @@ const ShiftFields = ({ form, onChange, errors = {} }: ShiftFieldsProps) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
         <Input
-          label="Break Start"
-          type="time"
-          name="breakStartTime"
-          value={form.breakStartTime}
+          label="Break Minutes"
+          type="number"
+          min="0"
+          max="120"
+          name="breakMinutes"
+          value={form.breakMinutes}
           onChange={onChange}
-          error={errors.breakStartTime}
-        />
-        <Input
-          label="Break End"
-          type="time"
-          name="breakEndTime"
-          value={form.breakEndTime}
-          onChange={onChange}
-          error={errors.breakEndTime}
+          error={errors.breakMinutes}
+          required
         />
       </div>
     </>

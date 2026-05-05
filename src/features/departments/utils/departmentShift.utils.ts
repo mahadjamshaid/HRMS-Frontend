@@ -13,8 +13,7 @@ export const emptyShiftForm: ShiftFormValues = {
   startTime: "09:00",
   endTime: "17:00",
   graceMinutes: "15",
-  breakStartTime: "",
-  breakEndTime: "",
+  breakMinutes: "30",
 };
 
 export const toTimeInput = (value?: string | null): string => {
@@ -96,39 +95,15 @@ export const analyzeShiftForm = (form: ShiftFormValues): ShiftAnalysis => {
     errors.endTime = "Shift duration cannot exceed 16 hours";
   }
 
-  const hasBreakStart = Boolean(form.breakStartTime);
-  const hasBreakEnd = Boolean(form.breakEndTime);
-
-  if (hasBreakStart !== hasBreakEnd) {
-    errors.breakEndTime = "Provide both break start and break end times";
+  const breakMinutes = parseGraceMinutes(form.breakMinutes); // reuse same parser
+  if (breakMinutes === null) {
+    errors.breakMinutes = form.breakMinutes.trim()
+      ? "Break minutes must be a valid whole number"
+      : "Break minutes is required";
+  } else if (breakMinutes < 0 || breakMinutes > 120) {
+    errors.breakMinutes = "Break minutes must be between 0 and 120";
   }
 
-  if (hasBreakStart && hasBreakEnd) {
-    const breakStartMinutes = timeToMinutes(form.breakStartTime);
-    const breakEndMinutes = timeToMinutes(form.breakEndTime);
-    const normalizedBreakStart = normalizePointInsideShift(
-      breakStartMinutes,
-      startMinutes,
-      isOvernight
-    );
-    let normalizedBreakEnd = normalizePointInsideShift(
-      breakEndMinutes,
-      startMinutes,
-      isOvernight
-    );
-
-    if (isOvernight && normalizedBreakEnd <= normalizedBreakStart) {
-      normalizedBreakEnd += 1440;
-    }
-
-    if (normalizedBreakStart === normalizedBreakEnd) {
-      errors.breakEndTime = "Break end must be different from break start";
-    } else if (normalizedBreakEnd < normalizedBreakStart) {
-      errors.breakEndTime = "Break end must be after break start";
-    } else if (normalizedBreakStart < startMinutes || normalizedBreakEnd > normalizedEndMinutes) {
-      errors.breakStartTime = "Break timing must be inside the shift window";
-    }
-  }
 
   return {
     valid: Object.keys(errors).length === 0,
@@ -150,8 +125,7 @@ export const toAssignDepartmentShiftPayload = (form: ShiftFormValues): AssignDep
   startTime: form.startTime,
   endTime: form.endTime,
   graceMinutes: getValidGraceMinutes(form.graceMinutes),
-  breakStartTime: form.breakStartTime || undefined,
-  breakEndTime: form.breakEndTime || undefined,
+  breakMinutes: Number(form.breakMinutes) || 0,
 });
 
 export const toCreateDepartmentPayload = (form: CreateDepartmentFormValues): CreateDepartmentPayload => ({
@@ -160,16 +134,14 @@ export const toCreateDepartmentPayload = (form: CreateDepartmentFormValues): Cre
   startTime: form.startTime,
   endTime: form.endTime,
   graceMinutes: getValidGraceMinutes(form.graceMinutes),
-  breakStartTime: form.breakStartTime || undefined,
-  breakEndTime: form.breakEndTime || undefined,
+  breakMinutes: Number(form.breakMinutes) || 0,
 });
 
 export const getShiftFormFromDepartment = (department?: Department | null): ShiftFormValues => ({
   startTime: toTimeInput(department?.assignedShift?.startTime) || emptyShiftForm.startTime,
   endTime: toTimeInput(department?.assignedShift?.endTime) || emptyShiftForm.endTime,
   graceMinutes: String(department?.assignedShift?.graceMinutes ?? emptyShiftForm.graceMinutes),
-  breakStartTime: toTimeInput(department?.assignedShift?.breakStartTime),
-  breakEndTime: toTimeInput(department?.assignedShift?.breakEndTime),
+  breakMinutes: String(department?.assignedShift?.breakMinutes ?? emptyShiftForm.breakMinutes),
 });
 
 export const getApiMessage = (response: ApiResponse<unknown> | undefined, fallback: string): string => {

@@ -5,8 +5,7 @@ export type DepartmentShift = {
   startTime: string;
   endTime: string;
   graceMinutes: number;
-  breakStartTime?: string | null;
-  breakEndTime?: string | null;
+  breakMinutes: number;
   durationMinutes?: number;
   isOvernight?: boolean;
 };
@@ -27,8 +26,7 @@ export type CreateDepartmentPayload = {
   startTime: string;
   endTime: string;
   graceMinutes: number;
-  breakStartTime?: string;
-  breakEndTime?: string;
+  breakMinutes: number;
 };
 
 export type UpdateDepartmentPayload = {
@@ -40,16 +38,14 @@ export type AssignDepartmentShiftPayload = {
   startTime: string;
   endTime: string;
   graceMinutes: number;
-  breakStartTime?: string;
-  breakEndTime?: string;
+  breakMinutes: number;
 };
 
 export type ShiftFormValues = {
   startTime: string;
   endTime: string;
   graceMinutes: string;
-  breakStartTime: string;
-  breakEndTime: string;
+  breakMinutes: string;
 };
 
 export type CreateDepartmentFormValues = ShiftFormValues & {

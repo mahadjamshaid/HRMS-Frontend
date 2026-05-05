@@ -9,10 +9,7 @@ import type { ShiftPreviewProps } from "../../../types/departmentTypes";
 
 const ShiftPreview = ({ form, title }: ShiftPreviewProps) => {
   const analysis = analyzeShiftForm(form);
-  const breakText =
-    form.breakStartTime && form.breakEndTime
-      ? `${formatShiftTime(form.breakStartTime)} - ${formatShiftTime(form.breakEndTime)}`
-      : "Not set";
+  const breakText = form.breakMinutes ? `${form.breakMinutes} min` : "Not set";
 
   return (
     <div className="space-y-5">
