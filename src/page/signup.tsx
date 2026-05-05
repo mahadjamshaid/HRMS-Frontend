@@ -80,7 +80,14 @@ function Signup() {
 
     setToken(res.data.token);
     console.log("SIGNUP SUCCESS:", res.data);
-    navigate("/dashboard");
+    const { token, role } = res.data;
+    const userRole = role || "employee";
+    localStorage.setItem("role", userRole);
+    if (userRole === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+    } else {
+      navigate("/employee/dashboard", { replace: true });
+    }
   };
 
   return (
