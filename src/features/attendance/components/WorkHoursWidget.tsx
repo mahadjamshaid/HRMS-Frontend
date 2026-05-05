@@ -1,19 +1,24 @@
 import React from "react";
 import type { WorkHoursWidgetProps } from "../../../types/attendanceTypes";
 
-const WorkHoursWidget = ({ checkInTime, checkOutTime }: WorkHoursWidgetProps) => {
-    const checkIn = checkInTime ? new Date(checkInTime) : null;
-    const checkOut = checkOutTime ? new Date(checkOutTime) : null;
-
+const WorkHoursWidget = ({ checkInTime, checkOutTime, workMinutes }: WorkHoursWidgetProps & { workMinutes?: number | null }) => {
     let hoursStr = "-";
     let progressPercent = 0;
 
-    if (checkIn && checkOut) {
-        const diffMs = checkOut.getTime() - checkIn.getTime();
-        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffMins = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    if (typeof workMinutes === 'number') {
+        const diffHrs = Math.floor(workMinutes / 60);
+        const diffMins = workMinutes % 60;
         hoursStr = `${diffHrs}h ${diffMins}m`;
-        progressPercent = Math.min((diffMs / (9 * 60 * 60 * 1000)) * 100, 100);
+        progressPercent = Math.min((workMinutes / (8 * 60)) * 100, 100);
+    } else if (checkInTime && checkOutTime) {
+        const checkIn = new Date(checkInTime);
+        const checkOut = new Date(checkOutTime);
+        const diffMs = checkOut.getTime() - checkIn.getTime();
+        const diffMinsTotal = Math.floor(diffMs / 60000);
+        const diffHrs = Math.floor(diffMinsTotal / 60);
+        const diffMins = diffMinsTotal % 60;
+        hoursStr = `${diffHrs}h ${diffMins}m`;
+        progressPercent = Math.min((diffMinsTotal / (8 * 60)) * 100, 100);
     }
 
     return (

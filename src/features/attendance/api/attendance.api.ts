@@ -1,8 +1,7 @@
 import { attendanceService } from "./attendance.service";
 import type {
-  AdminAttendanceStats,
-  AdminCheckInPayload,
-  AdminCheckOutPayload,
+  AdminAttendanceSummary,
+  AdminManualEntryPayload,
   AttendanceApiResponse,
   AttendanceRecord,
   AttendanceRecordsPage,
@@ -12,22 +11,32 @@ import type {
 
 /**
  * ADMIN ATTENDANCE METHODS
- * Requires administrative permissions on the backend
  */
-export const adminCheckIn = async (data: AdminCheckInPayload): Promise<AttendanceApiResponse<AttendanceRecord>> => {
-  return attendanceService.post<AttendanceRecord, AdminCheckInPayload>("/attendance/check-in", data);
+export const adminManualEntry = async (data: AdminManualEntryPayload): Promise<AttendanceApiResponse<AttendanceRecord>> => {
+  return attendanceService.post<AttendanceRecord, AdminManualEntryPayload>("/attendance/admin/manual-entry", data);
 };
 
-export const adminCheckOut = async (data: AdminCheckOutPayload): Promise<AttendanceApiResponse<AttendanceRecord>> => {
-  return attendanceService.post<AttendanceRecord, AdminCheckOutPayload>("/attendance/check-out", data);
+export const getAttendanceSummary = async (): Promise<AttendanceApiResponse<AdminAttendanceSummary>> => {
+  return attendanceService.get<AdminAttendanceSummary>("/attendance/reports/summary");
 };
 
-export const getAdminStats = async (): Promise<AttendanceApiResponse<AdminAttendanceStats>> => {
-  return attendanceService.get<AdminAttendanceStats>("/attendance/admin/stats");
+export const getEmployeeHistoryForAdmin = async (
+  employeeId: number, 
+  startDate?: string, 
+  endDate?: string
+): Promise<AttendanceApiResponse<AttendanceRecord[]>> => {
+  let url = `/attendance/reports/employee/${employeeId}`;
+  if (startDate && endDate) url += `?startDate=${startDate}&endDate=${endDate}`;
+  return attendanceService.get<AttendanceRecord[]>(url);
 };
 
-export const getAttendanceByEmployeeId = async (employeeId: number): Promise<AttendanceApiResponse<AttendanceRecord[]>> => {
-  return attendanceService.get<AttendanceRecord[]>(`/attendance/${employeeId}`);
+export const getDepartmentAttendance = async (
+  departmentId: number,
+  date?: string
+): Promise<AttendanceApiResponse<AttendanceRecord[]>> => {
+  let url = `/attendance/reports/department/${departmentId}`;
+  if (date) url += `?date=${date}`;
+  return attendanceService.get<AttendanceRecord[]>(url);
 };
 
 export const getAllAttendance = async (
@@ -52,7 +61,6 @@ export const updateAttendance = async (
 
 /**
  * EMPLOYEE ATTENDANCE METHODS
- * Self-service methods for the currently authenticated user
  */
 export const employeeCheckIn = async (data?: EmployeeCheckInPayload): Promise<AttendanceApiResponse<AttendanceRecord>> => {
   return attendanceService.post<AttendanceRecord, EmployeeCheckInPayload>("/attendance/employee/check-in", data);

@@ -10,6 +10,8 @@ import Card from "../../components/Card";
 import Button from "../../components/Button";
 import Badge from "../../components/Badge";
 
+import { useLiveTimer } from "../../features/attendance/hooks/useLiveTimer";
+
 const EmployeeDashboardPage = () => {
     const user = getUser();
 
@@ -25,6 +27,8 @@ const EmployeeDashboardPage = () => {
         handleCheckOut 
     } = useEmployeeCheckInOut();
 
+    const { formatElapsed } = useLiveTimer(attendance?.checkInTime && !attendance.checkOutTime ? attendance.checkInTime : null);
+
     useEffect(() => {
         fetchTodayAttendance();
         fetchRecords();
@@ -32,12 +36,12 @@ const EmployeeDashboardPage = () => {
 
     const onCheckIn = async () => {
         const success = await handleCheckIn();
-        if (success) fetchRecords(); // Refresh recent logs and stats
+        if (success) fetchRecords();
     };
 
     const onCheckOut = async () => {
         const success = await handleCheckOut();
-        if (success) fetchRecords(); // Refresh recent logs and stats
+        if (success) fetchRecords();
     };
 
     return (
@@ -70,11 +74,11 @@ const EmployeeDashboardPage = () => {
 
                         <div className="space-y-6 mb-10">
                             <div className="flex justify-between items-center"><span className="text-xs font-bold text-slate-400">Punch In</span><span className="text-sm font-black text-slate-900">{attendance && attendance.checkInTime ? formatTimeInTimezone(attendance.checkInTime) : "--:--"}</span></div>
-                            <div className="flex justify-between items-center"><span className="text-xs font-bold text-slate-400">Punch Out</span><span className="text-sm font-black text-slate-900">{attendance?.checkOutTime ? formatTimeInTimezone(attendance.checkOutTime) : "--:--"}</span></div>
+                            <div className="flex justify-between items-center"><span className="text-xs font-bold text-slate-400">Duration</span><span className="text-sm font-black text-indigo-600">{attendance && !attendance.checkOutTime ? formatElapsed() : (attendance?.workMinutes ? `${Math.floor(attendance.workMinutes/60)}h ${attendance.workMinutes%60}m` : "--:--")}</span></div>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Button variant="primary" onClick={onCheckIn} disabled={actionLoading || !!attendance} className="w-full">Punch In</Button>
+                        <Button variant="primary" onClick={onCheckIn} disabled={actionLoading || (!!attendance && !attendance.checkOutTime)} className="w-full">Punch In</Button>
                         <Button variant="secondary" onClick={onCheckOut} disabled={actionLoading || !attendance || !!attendance.checkOutTime} className="w-full border-slate-100 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 disabled:bg-slate-50 disabled:text-slate-300">Punch Out</Button>
                     </div>
                 </Card>

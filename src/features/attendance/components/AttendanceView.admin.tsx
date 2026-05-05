@@ -18,7 +18,7 @@ const AttendanceViewAdmin = ({ data, loading, page = 1, totalPages, onPageChange
         {
             header: "Date",
             cellClassName: "text-sm font-bold text-slate-600",
-            render: (record) => new Date(record.date).toLocaleDateString()
+            render: (record) => record.attendanceDate
         },
         {
             header: "Check In",
@@ -36,7 +36,9 @@ const AttendanceViewAdmin = ({ data, loading, page = 1, totalPages, onPageChange
                 <Badge
                     variant={
                         record.status === 'Present' ? 'success' :
-                            record.status === 'Late' ? 'warning' : 'danger'
+                        record.status === 'Late' ? 'warning' : 
+                        record.status === 'HalfDay' ? 'neutral' :
+                        record.status === 'ShortDay' ? 'danger' : 'danger'
                     }
                 >
                     {record.status}

@@ -1,26 +1,29 @@
 import type { Dispatch, FormEventHandler, SetStateAction } from "react";
 import type { ApiResponse } from "./api";
 
-export type AttendanceStatus = "Present" | "Late" | "Absent" | "OnLeave";
+export type AttendanceStatus = "Present" | "Late" | "HalfDay" | "ShortDay" | "Absent" | "OnLeave";
 
 export type AttendanceRecord = {
   id?: number;
   employeeId?: number;
   employeeName?: string;
   employeeDepartment?: string;
-  date: string;
+  attendanceDate: string; // New PKT Date field
   checkInTime?: string | null;
   checkOutTime?: string | null;
   status: AttendanceStatus;
+  workMinutes?: number | null; // Stored work duration
   createdAt?: string;
   updatedAt?: string;
 };
 
-export type AdminAttendanceStats = {
-  totalEmployees: number;
-  presentToday: number;
-  absentToday: number;
-  lateToday: number;
+export type AdminAttendanceSummary = {
+  total: number;
+  present: number;
+  absent: number;
+  late: number;
+  halfDay: number;
+  shortDay: number;
 };
 
 export type AttendanceRecordsPage = {
@@ -31,15 +34,12 @@ export type AttendanceRecordsPage = {
   totalRecords?: number;
 };
 
-export type AdminCheckInPayload = {
+export type AdminManualEntryPayload = {
   employeeId: number;
-  checkInTime?: string;
+  date: string;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
   status?: AttendanceStatus;
-};
-
-export type AdminCheckOutPayload = {
-  employeeId: number;
-  checkOutTime?: string;
 };
 
 export type EmployeeCheckInPayload = {
@@ -47,10 +47,9 @@ export type EmployeeCheckInPayload = {
 };
 
 export type UpdateAttendancePayload = {
-  checkInTime?: string;
-  checkOutTime?: string;
-  status?: Extract<AttendanceStatus, "Absent" | "OnLeave">;
-  date?: string;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  status?: AttendanceStatus;
 };
 
 export type UpdateAttendanceResult = {
