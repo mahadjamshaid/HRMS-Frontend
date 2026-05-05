@@ -96,15 +96,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
                                 <svg className={`h-5 w-5 flex-shrink-0 transition-colors ${active ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-900'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                                 </svg>
-                                {!isSidebarCollapsed && (
-                                    <>
-                                        <span className="tracking-tight flex-1 text-left">{item.label}</span>
-                                        {item.children && (
-                                            <svg className={`w-4 h-4 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        )}
-                                    </>
+                                <span className={`tracking-tight flex-1 text-left transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 invisible w-0' : 'opacity-100 visible delay-150'}`}>
+                                    {item.label}
+                                </span>
+                                {item.children && !isSidebarCollapsed && (
+                                    <svg className={`w-4 h-4 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 )}
                             </button>
 
@@ -126,22 +124,25 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
                 })}
             </nav>
 
-            <div className="dash-sidebar-footer p-6">
-                <div className="bg-slate-50/50 rounded-[2rem] p-6 border border-slate-100/50 backdrop-blur-sm">
-                    {!isSidebarCollapsed ? (
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center font-black text-indigo-600 border border-slate-100">{user?.username?.charAt(0) || "A"}</div>
-                            <div className="overflow-hidden">
-                                <p className="text-sm font-black text-slate-900 truncate">{user?.username || "User"}</p>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{portalName}</p>
-                            </div>
+            <div className={`dash-sidebar-footer transition-all duration-500 ${isSidebarCollapsed ? 'p-3' : 'p-6'}`}>
+                <div className={`bg-slate-50/50 rounded-[2rem] border border-slate-100/50 backdrop-blur-sm transition-all duration-500 ${isSidebarCollapsed ? 'p-2' : 'p-6'}`}>
+                    <div className={`flex items-center mb-6 transition-all duration-500 ${isSidebarCollapsed ? 'justify-center gap-0' : 'gap-4'}`}>
+                        <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex-shrink-0 flex items-center justify-center font-black text-indigo-600 border border-slate-100">
+                            {user?.username?.charAt(0) || "A"}
                         </div>
-                    ) : (
-                        <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center font-black text-indigo-600 border border-slate-100 mx-auto mb-4">{user?.username?.charAt(0) || "A"}</div>
-                    )}
-                    <button onClick={handleLogout} className="w-full py-3 bg-white hover:bg-rose-50 hover:text-rose-600 text-slate-600 rounded-xl font-bold text-xs transition-all border border-slate-100 shadow-sm active:scale-95 flex items-center justify-center gap-2">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                        {!isSidebarCollapsed && "Sign Out"}
+                        <div className={`overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
+                            <p className="text-sm font-black text-slate-900 truncate">{user?.username || "User"}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{portalName}</p>
+                        </div>
+                    </div>
+                    
+                    <button onClick={handleLogout} className="w-full py-3 bg-white hover:bg-rose-50 hover:text-rose-600 text-slate-600 rounded-xl font-bold text-xs transition-all border border-slate-100 shadow-sm active:scale-95 flex items-center justify-center gap-2 overflow-hidden">
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span className={`transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
+                            Sign Out
+                        </span>
                     </button>
                 </div>
             </div>
