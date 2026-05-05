@@ -53,9 +53,7 @@ const DepartmentTable = ({ departments, loading }: DepartmentTableProps) => {
                     {shift?.graceMinutes ?? 0} min
                   </td>
                   <td className="py-6 text-sm font-bold text-slate-600">
-                    {shift?.breakStartTime && shift?.breakEndTime
-                      ? `${formatShiftTime(shift.breakStartTime)} - ${formatShiftTime(shift.breakEndTime)}`
-                      : "Not set"}
+                    {shift?.breakMinutes ? `${shift.breakMinutes} min` : "Not set"}
                   </td>
                   <td className="py-6">
                     <Badge variant={shift?.isOvernight ? "warning" : "success"}>
