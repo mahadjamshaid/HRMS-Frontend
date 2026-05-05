@@ -67,13 +67,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
     };
 
     return (
-        <aside className={`bg-white/70 backdrop-blur-2xl border-r border-white/40 shadow-2xl flex flex-col fixed inset-y-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] font-sans ${isSidebarCollapsed ? 'w-24' : 'w-72'}`}>
+        <aside className={`bg-white/70 backdrop-blur-2xl border-r border-white/40 shadow-2xl flex flex-col fixed inset-y-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isSidebarCollapsed ? 'w-24' : 'w-72'}`}>
             <div className="dash-sidebar-header">
                 <div className={`flex items-center gap-4 ${isSidebarCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>
                     <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
                         <img src={logo} alt="xNerds" className="h-6 w-auto invert brightness-0" />
                     </div>
-                    <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">XNERDS</span>
+                    <span className="text-2xl font-black tracking-tighter text-slate-900">xNerds</span>
                 </div>
                 <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="dash-btn-icon hover:bg-slate-100/50">
                     <svg className={`w-5 h-5 transition-transform duration-500 ${isSidebarCollapsed ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,12 +127,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
             <div className={`dash-sidebar-footer transition-all duration-500 ${isSidebarCollapsed ? 'p-3' : 'p-6'}`}>
                 <div className={`bg-slate-50/50 rounded-[2rem] border border-slate-100/50 backdrop-blur-sm transition-all duration-500 ${isSidebarCollapsed ? 'p-2' : 'p-6'}`}>
                     <div className={`flex items-center mb-6 transition-all duration-500 ${isSidebarCollapsed ? 'justify-center gap-0' : 'gap-4'}`}>
-                        <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex-shrink-0 flex items-center justify-center font-black text-indigo-600 border border-slate-100">
-                            {user?.username?.charAt(0) || "A"}
+                        <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex-shrink-0 flex items-center justify-center font-black text-indigo-600 border border-slate-100 font-sans">
+                            {user?.username?.charAt(0).toUpperCase() }
                         </div>
                         <div className={`overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
-                            <p className="text-sm font-black text-slate-900 truncate">{user?.username || "User"}</p>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{portalName.toUpperCase()}</p>
+                            <p className="text-sm font-black text-slate-900 truncate font-sans uppercase">{user?.username || "User"}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-sans">{portalName}</p>
                         </div>
                     </div>
                     
@@ -140,8 +140,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
                         <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span className={`transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
-                            Sign Out
+                        <span className={`transition-all duration-300 font-sans uppercase tracking-widest text-[10px] ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
+                            SIGN OUT
                         </span>
                     </button>
                 </div>
