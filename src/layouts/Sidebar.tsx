@@ -67,13 +67,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
     };
 
     return (
-        <aside className={`bg-white/70 backdrop-blur-2xl border-r border-white/40 shadow-2xl flex flex-col fixed inset-y-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isSidebarCollapsed ? 'w-24' : 'w-72'}`}>
+        <aside className={`bg-white/70 backdrop-blur-2xl border-r border-white/40 shadow-2xl flex flex-col fixed inset-y-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] font-sans ${isSidebarCollapsed ? 'w-24' : 'w-72'}`}>
             <div className="dash-sidebar-header">
                 <div className={`flex items-center gap-4 ${isSidebarCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>
                     <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
                         <img src={logo} alt="xNerds" className="h-6 w-auto invert brightness-0" />
                     </div>
-                    <span className="text-2xl font-black tracking-tighter text-slate-900">xNerds</span>
+                    <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">XNERDS</span>
                 </div>
                 <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="dash-btn-icon hover:bg-slate-100/50">
                     <svg className={`w-5 h-5 transition-transform duration-500 ${isSidebarCollapsed ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -132,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
                         </div>
                         <div className={`overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
                             <p className="text-sm font-black text-slate-900 truncate">{user?.username || "User"}</p>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{portalName}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{portalName.toUpperCase()}</p>
                         </div>
                     </div>
                     
