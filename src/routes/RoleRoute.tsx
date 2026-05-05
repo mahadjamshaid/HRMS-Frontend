@@ -20,7 +20,7 @@ function RoleRoute({ children, allowedRole }: RoleRouteProps) {
   if (role !== allowedRole) {
     const redirect =
       role === "admin"
-        ? "/dashboard"
+        ? "/admin/dashboard"
         : role === "employee"
         ? "/employee/dashboard"
         : "/login";
