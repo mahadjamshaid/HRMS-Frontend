@@ -16,7 +16,7 @@ export const logout = () => {
 }
 
 export const isAuthenticated = (): boolean => {
-    return !!getToken();
+    return !!getToken() && !!localStorage.getItem(ROLE_KEY);
 }
 
 export const getUser = (): AuthenticatedUser | null => {

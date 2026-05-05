@@ -62,7 +62,7 @@ function Login() {
     localStorage.setItem("role", role);
 
     if (role === "admin") {
-      navigate("/dashboard", { replace: true });
+      navigate("/admin/dashboard", { replace: true });
     } else if (role === "employee") {
       navigate("/employee/dashboard", { replace: true });
     } else {
