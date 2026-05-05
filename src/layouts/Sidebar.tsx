@@ -128,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, setIsSidebarColla
                 <div className={`bg-slate-50/50 rounded-[2rem] border border-slate-100/50 backdrop-blur-sm transition-all duration-500 ${isSidebarCollapsed ? 'p-2' : 'p-6'}`}>
                     <div className={`flex items-center mb-6 transition-all duration-500 ${isSidebarCollapsed ? 'justify-center gap-0' : 'gap-4'}`}>
                         <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex-shrink-0 flex items-center justify-center font-black text-indigo-600 border border-slate-100 font-sans">
-                            {user?.username?.charAt(0).toUpperCase() }
+                            {(user?.username?.charAt(0) || "U").toUpperCase()}
                         </div>
                         <div className={`overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 visible delay-150'}`}>
                             <p className="text-sm font-black text-slate-900 truncate font-sans uppercase">{user?.username || "User"}</p>
