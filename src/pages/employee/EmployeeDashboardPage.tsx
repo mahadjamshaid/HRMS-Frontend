@@ -120,15 +120,12 @@ const EmployeeDashboardPage = () => {
                         <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{monthlyHours.progressPercent}%</p>
                     </div>
                     <div className="space-y-4">
-                        <div className="flex items-end justify-between gap-4">
-                            <div>
-                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Done</p>
-                                <p className="text-3xl font-black text-indigo-600">{monthlyHours.completedLabel}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Required</p>
-                                <p className="text-lg font-black text-slate-900">{monthlyHours.requiredLabel}</p>
-                            </div>
+                        <div>
+                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Worked / Required</p>
+                            <p className="text-3xl font-black text-indigo-600">
+                                {monthlyHours.completedHoursLabel}
+                                <span className="text-lg text-slate-900"> / {monthlyHours.requiredHoursLabel}</span>
+                            </p>
                         </div>
                         <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                             <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${monthlyHours.progressPercent}%` }}></div>

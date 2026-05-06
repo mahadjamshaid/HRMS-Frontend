@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { formatMinutes } from "../../../utils/dateUtils";
 import type { AttendanceRecord } from "../../../types/attendanceTypes";
 
-const DEFAULT_REQUIRED_WORK_MINUTES = 8 * 60;
+const DEFAULT_REQUIRED_WORK_MINUTES = 480;
 
 type MonthlyHoursStats = {
   completedMinutes: number;
@@ -10,43 +10,33 @@ type MonthlyHoursStats = {
   remainingMinutes: number;
   workingDays: number;
   progressPercent: number;
+  completedHoursLabel: string;
+  requiredHoursLabel: string;
   completedLabel: string;
   requiredLabel: string;
   remainingLabel: string;
 };
 
-const getCurrentPKTMonth = () => {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Karachi",
-    year: "numeric",
-    month: "numeric",
-  }).formatToParts(new Date());
-
-  return {
-    year: Number(parts.find((part) => part.type === "year")?.value),
-    month: Number(parts.find((part) => part.type === "month")?.value),
-  };
-};
-
-const isWeekday = (year: number, month: number, day: number): boolean => {
-  const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
-  return weekday !== 0 && weekday !== 6;
-};
-
 const getWorkingDaysInMonth = (year: number, month: number): number => {
-  const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
   let workingDays = 0;
+  const date = new Date(year, month, 1);
 
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    if (isWeekday(year, month, day)) workingDays += 1;
+  while (date.getMonth() === month) {
+    const day = date.getDay();
+    if (day !== 0 && day !== 6) workingDays += 1;
+    date.setDate(date.getDate() + 1);
   }
 
   return workingDays;
 };
 
-const isCurrentPKTMonthRecord = (record: AttendanceRecord, year: number, month: number): boolean => {
-  const [recordYear, recordMonth] = record.attendanceDate.split("-").map(Number);
-  return recordYear === year && recordMonth === month;
+const isCurrentMonthRecord = (record: AttendanceRecord, year: number, month: number): boolean => {
+  const date = new Date(record.attendanceDate);
+  return date.getMonth() === month && date.getFullYear() === year;
+};
+
+const isValidRequiredMinutes = (value: number | null | undefined): value is number => {
+  return typeof value === "number" && value > 0;
 };
 
 export const useEmployeeMonthlyHours = (
@@ -55,12 +45,14 @@ export const useEmployeeMonthlyHours = (
   activeElapsedMinutes: number
 ): MonthlyHoursStats => {
   return useMemo(() => {
-    const { year, month } = getCurrentPKTMonth();
-    const currentMonthRecords = records.filter((record) => isCurrentPKTMonthRecord(record, year, month));
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    const currentMonthRecords = records.filter((record) => isCurrentMonthRecord(record, year, month));
     const dailyRequiredMinutes =
-      currentMonthRecords.find((record) => typeof record.requiredWorkMinutes === "number")?.requiredWorkMinutes ??
-      (typeof activeAttendance?.requiredWorkMinutes === "number" ? activeAttendance.requiredWorkMinutes : undefined) ??
-      records.find((record) => typeof record.requiredWorkMinutes === "number")?.requiredWorkMinutes ??
+      currentMonthRecords.find((record) => isValidRequiredMinutes(record.requiredWorkMinutes))?.requiredWorkMinutes ??
+      (isValidRequiredMinutes(activeAttendance?.requiredWorkMinutes) ? activeAttendance.requiredWorkMinutes : undefined) ??
+      records.find((record) => isValidRequiredMinutes(record.requiredWorkMinutes))?.requiredWorkMinutes ??
       DEFAULT_REQUIRED_WORK_MINUTES;
 
     const completedFromRecords = currentMonthRecords.reduce((total, record) => {
@@ -70,7 +62,7 @@ export const useEmployeeMonthlyHours = (
     const activeMinutes =
       activeAttendance &&
       !activeAttendance.checkOutTime &&
-      isCurrentPKTMonthRecord(activeAttendance, year, month)
+      isCurrentMonthRecord(activeAttendance, year, month)
         ? activeElapsedMinutes
         : 0;
 
@@ -88,6 +80,8 @@ export const useEmployeeMonthlyHours = (
       remainingMinutes,
       workingDays,
       progressPercent,
+      completedHoursLabel: `${Math.floor(completedMinutes / 60)}h`,
+      requiredHoursLabel: `${Math.floor(requiredMinutes / 60)}h`,
       completedLabel: formatMinutes(completedMinutes),
       requiredLabel: formatMinutes(requiredMinutes),
       remainingLabel: formatMinutes(remainingMinutes),

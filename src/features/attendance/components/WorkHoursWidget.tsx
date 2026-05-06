@@ -1,15 +1,21 @@
 import React from "react";
 import type { WorkHoursWidgetProps } from "../../../types/attendanceTypes";
 
-const WorkHoursWidget = ({ checkInTime, checkOutTime, checkInTimeRaw, checkOutTimeRaw, workMinutes }: WorkHoursWidgetProps & { workMinutes?: number | null, checkInTimeRaw?: string | null, checkOutTimeRaw?: string | null }) => {
+const DEFAULT_REQUIRED_WORK_MINUTES = 480;
+
+const WorkHoursWidget = ({ checkInTimeRaw, checkOutTimeRaw, workMinutes, requiredWorkMinutes }: WorkHoursWidgetProps) => {
     let hoursStr = "-";
     let progressPercent = 0;
+    const dailyRequiredMinutes =
+        typeof requiredWorkMinutes === "number" && requiredWorkMinutes > 0
+            ? requiredWorkMinutes
+            : DEFAULT_REQUIRED_WORK_MINUTES;
 
     if (typeof workMinutes === 'number') {
         const diffHrs = Math.floor(workMinutes / 60);
         const diffMins = workMinutes % 60;
         hoursStr = `${diffHrs}h ${diffMins}m`;
-        progressPercent = Math.min((workMinutes / (8 * 60)) * 100, 100);
+        progressPercent = Math.min((workMinutes / dailyRequiredMinutes) * 100, 100);
     } else if (checkInTimeRaw && checkOutTimeRaw) {
         // Fallback for real-time math using RAW ISO strings
         try {
@@ -22,7 +28,7 @@ const WorkHoursWidget = ({ checkInTime, checkOutTime, checkInTimeRaw, checkOutTi
                 const diffHrs = Math.floor(diffMinsTotal / 60);
                 const diffMins = diffMinsTotal % 60;
                 hoursStr = `${diffHrs}h ${diffMins}m`;
-                progressPercent = Math.min((diffMinsTotal / (8 * 60)) * 100, 100);
+                progressPercent = Math.min((diffMinsTotal / dailyRequiredMinutes) * 100, 100);
             }
         } catch {
             hoursStr = "-";

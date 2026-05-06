@@ -61,6 +61,7 @@ const AttendanceViewEmployee = ({
                 checkInTimeRaw={record.checkInTimeRaw}
                 checkOutTimeRaw={record.checkOutTimeRaw}
                 workMinutes={record.workMinutes} 
+                requiredWorkMinutes={record.requiredWorkMinutes}
             />
         }
     ];

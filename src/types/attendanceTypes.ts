@@ -71,6 +71,10 @@ export type AttendanceViewEmployeeProps = {
 export type WorkHoursWidgetProps = {
   checkInTime?: string | null;
   checkOutTime?: string | null;
+  checkInTimeRaw?: string | null;
+  checkOutTimeRaw?: string | null;
+  workMinutes?: number | null;
+  requiredWorkMinutes?: number | null;
 };
 
 export type ManualAttendanceAction = "checkIn" | "checkOut";
