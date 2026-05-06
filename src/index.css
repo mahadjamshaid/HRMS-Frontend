@@ -108,11 +108,11 @@
 }
 
 .auth-footer {
-  @apply mt-8 flex flex-wrap items-center justify-center gap-2 text-center text-sm font-semibold text-slate-500;
+  @apply mt-8 flex flex-wrap items-center justify-center gap-1.5 border-t border-slate-100 pt-6 text-center text-sm font-medium text-slate-500;
 }
 
 .auth-footer-link {
-  @apply inline-flex items-center rounded-full bg-indigo-50 px-3.5 py-2 text-sm font-black text-indigo-600 transition-all hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10;
+  @apply font-black text-indigo-600 transition-colors hover:text-indigo-700 hover:underline underline-offset-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10;
 }
 
 /* Core Inputs & Buttons */
