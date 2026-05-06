@@ -29,6 +29,9 @@ const EmployeeDashboardPage = () => {
 
     const { elapsedMinutes, formatElapsed } = useLiveTimer(attendance?.checkInTimeRaw && !attendance.checkOutTime ? attendance.checkInTimeRaw : null);
     const monthlyHours = useEmployeeMonthlyHours(records, attendance, elapsedMinutes);
+    const monthlyProgressRadius = 22;
+    const monthlyProgressCircumference = 2 * Math.PI * monthlyProgressRadius;
+    const monthlyProgressOffset = monthlyProgressCircumference * (1 - monthlyHours.progressPercent / 100);
 
     useEffect(() => {
         fetchTodayAttendance();
@@ -114,25 +117,59 @@ const EmployeeDashboardPage = () => {
                         <svg className="w-12 h-8 text-amber-500" viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0 35 Q 20 35, 40 20 T 80 10 T 100 30" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" className="opacity-10" /><path d="M0 35 Q 20 35, 40 20 T 80 10" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" /><circle cx="80" cy="10" r="4" fill="currentColor" /></svg>
                     </div>
                 </Card>
-                <Card compact className="group">
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Month Hours</p>
-                        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{monthlyHours.progressPercent}%</p>
-                    </div>
-                    <div className="space-y-4">
+                <Card compact className="group overflow-hidden border-t-4 border-t-indigo-500">
+                    <div className="flex items-start justify-between gap-4 mb-6">
                         <div>
-                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Worked / Required</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Month Hours</p>
+                            <p className="mt-2 text-xs font-bold text-slate-400">{monthlyHours.workingDays} working days</p>
+                        </div>
+                        <div className="relative h-14 w-14 shrink-0">
+                            <svg className="h-full w-full -rotate-90" viewBox="0 0 56 56">
+                                <circle cx="28" cy="28" r={monthlyProgressRadius} stroke="currentColor" strokeWidth="6" fill="transparent" className="text-slate-100" />
+                                <circle
+                                    cx="28"
+                                    cy="28"
+                                    r={monthlyProgressRadius}
+                                    stroke="currentColor"
+                                    strokeWidth="6"
+                                    fill="transparent"
+                                    strokeLinecap="round"
+                                    strokeDasharray={monthlyProgressCircumference}
+                                    strokeDashoffset={monthlyProgressOffset}
+                                    className="text-indigo-500 transition-all duration-1000"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center text-[11px] font-black text-indigo-600">
+                                {monthlyHours.progressPercent}%
+                            </div>
+                        </div>
+                    </div>
+                    <div className="space-y-5">
+                        <div>
+                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Worked / Required</p>
                             <p className="text-3xl font-black text-indigo-600">
                                 {monthlyHours.completedHoursLabel}
-                                <span className="text-lg text-slate-900"> / {monthlyHours.requiredHoursLabel}</span>
+                                <span className="align-baseline text-lg text-slate-900"> / {monthlyHours.requiredHoursLabel}</span>
                             </p>
                         </div>
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${monthlyHours.progressPercent}%` }}></div>
+                        <div>
+                            <div className="mb-2 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-300">
+                                <span>Progress</span>
+                                <span>{monthlyHours.remainingLabel} left</span>
+                            </div>
+                            <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${monthlyHours.progressPercent}%` }}></div>
+                            </div>
                         </div>
-                        <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            <span>{monthlyHours.workingDays} weekdays</span>
-                            <span>{monthlyHours.remainingLabel} left</span>
+                        <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">Required</p>
+                                <p className="mt-1 text-sm font-black text-slate-900">{monthlyHours.requiredLabel}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">Remaining</p>
+                                <p className="mt-1 text-sm font-black text-slate-900">{monthlyHours.remainingLabel}</p>
+                            </div>
                         </div>
                     </div>
                 </Card>
