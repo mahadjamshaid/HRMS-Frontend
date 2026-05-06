@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../api/auth.api";
 import bgImage from "../assets/bg-image.png";
 import logo from "../assets/logo.png";
@@ -84,6 +84,11 @@ function ResetPassword() {
               {loading ? "Resetting..." : "Reset Password"}
             </Button>
           </form>
+
+          <p className="auth-footer">
+            Remembered your password?{" "}
+            <Link to="/login" className="auth-footer-link">Login</Link>
+          </p>
         </div>
       </div>
     </div>

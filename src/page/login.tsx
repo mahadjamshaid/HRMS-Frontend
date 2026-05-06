@@ -173,11 +173,12 @@ function Login() {
             >
               {loading ? "Authenticating..." : "Continue to Dashboard"}
             </Button>
+
           </form>
 
           <p className="auth-footer">
             New to xNerds?{" "}
-            <Link to="/signup" className="text-indigo-600 font-bold hover:underline tracking-tight">Create account</Link>
+            <Link to="/signup" className="auth-footer-link">Create free account</Link>
           </p>
         </div>
       </div>

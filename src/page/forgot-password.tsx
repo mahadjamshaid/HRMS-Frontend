@@ -84,7 +84,7 @@ function ForgotPassword() {
 
           <p className="auth-footer">
             Remembered your password?{" "}
-            <Link to="/login" className="text-indigo-600 font-semibold hover:underline">Login</Link>
+            <Link to="/login" className="auth-footer-link">Login</Link>
           </p>
         </div>
       </div>
