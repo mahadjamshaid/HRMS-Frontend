@@ -173,25 +173,11 @@ function Login() {
             >
               {loading ? "Authenticating..." : "Continue to Dashboard"}
             </Button>
-
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-              <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest"><span className="bg-white px-4 text-slate-400">Secure SSO Login</span></div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="secondary" type="button" className="w-full h-[52px]" icon={<svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0112 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115z" /><path fill="#34A853" d="M16.04 18.013c-1.09.703-2.474 1.078-4.04 1.078a7.077 7.077 0 01-6.723-4.806l-4.04 3.134a11.97 11.97 0 0010.763 6.581c3.085 0 5.834-1.018 7.77-2.753l-3.73-3.234z" /><path fill="#4A90E2" d="M19.98 12c0-.85-.148-1.664-.405-2.433H12v4.542h4.526c-.234 1.488-1.099 2.766-2.486 3.655l3.731 3.234c2.196-2.023 3.465-5 3.465-8.998z" /><path fill="#FBBC05" d="M5.277 14.268A7.12 7.12 0 014.909 12c0-.782.125-1.533.357-2.235L1.24 6.65A11.934 11.934 0 000 12c0 1.92.445 3.73 1.237 5.335l4.04-3.067z" /></svg>}>
-                Google
-              </Button>
-              <Button variant="secondary" type="button" className="w-full h-[52px]" icon={<svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>}>
-                Facebook
-              </Button>
-            </div>
           </form>
 
-          <p className="auth-footer text-base font-medium">
+          <p className="auth-footer">
             New to xNerds?{" "}
-            <Link to="/signup" className="text-indigo-600 font-black hover:underline tracking-tight">Create free account</Link>
+            <Link to="/signup" className="text-indigo-600 font-bold hover:underline tracking-tight">Create account</Link>
           </p>
         </div>
       </div>
