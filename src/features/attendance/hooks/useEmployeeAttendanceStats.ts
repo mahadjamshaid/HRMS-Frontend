@@ -13,7 +13,6 @@ export const useEmployeeAttendanceStats = (records: AttendanceRecord[] = []) => 
             total,
             present: presentCount,
             late: lateCount,
-            leaves: 1 // Default mock until leave integration is added
         };
     }, [records]);
 

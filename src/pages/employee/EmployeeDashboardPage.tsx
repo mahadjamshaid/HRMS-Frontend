@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getUser } from "../../utils/auth.utils";
-import { formatTimeInTimezone } from "../../utils/dateUtils";
 import { useEmployeeAttendanceRecords } from "../../features/attendance/hooks/useEmployeeAttendanceRecords";
 import { useEmployeeAttendanceStats } from "../../features/attendance/hooks/useEmployeeAttendanceStats";
 import { useEmployeeCheckInOut } from "../../features/attendance/hooks/useEmployeeCheckInOut";
+import { useEmployeeMonthlyHours } from "../../features/attendance/hooks/useEmployeeMonthlyHours";
 import AttendanceViewEmployee from "../../features/attendance/components/AttendanceView.employee";
 import Card from "../../components/Card";
 import Button from "../../components/Button";
@@ -27,7 +27,8 @@ const EmployeeDashboardPage = () => {
         handleCheckOut 
     } = useEmployeeCheckInOut();
 
-    const { formatElapsed } = useLiveTimer(attendance?.checkInTime && !attendance.checkOutTime ? attendance.checkInTime : null);
+    const { elapsedMinutes, formatElapsed } = useLiveTimer(attendance?.checkInTimeRaw && !attendance.checkOutTime ? attendance.checkInTimeRaw : null);
+    const monthlyHours = useEmployeeMonthlyHours(records, attendance, elapsedMinutes);
 
     useEffect(() => {
         fetchTodayAttendance();
@@ -73,7 +74,7 @@ const EmployeeDashboardPage = () => {
                         {actionError && <p className="text-[10px] font-black text-rose-500 mb-6 animate-pulse uppercase tracking-widest">{actionError}</p>}
 
                         <div className="space-y-6 mb-10">
-                            <div className="flex justify-between items-center"><span className="text-xs font-bold text-slate-400">Punch In</span><span className="text-sm font-black text-slate-900">{attendance && attendance.checkInTime ? formatTimeInTimezone(attendance.checkInTime) : "--:--"}</span></div>
+                            <div className="flex justify-between items-center"><span className="text-xs font-bold text-slate-400">Punch In</span><span className="text-sm font-black text-slate-900">{attendance?.checkInTime || "--:--"}</span></div>
                             <div className="flex justify-between items-center"><span className="text-xs font-bold text-slate-400">Duration</span><span className="text-sm font-black text-indigo-600">{attendance && !attendance.checkOutTime ? formatElapsed() : (attendance?.workMinutes ? `${Math.floor(attendance.workMinutes/60)}h ${attendance.workMinutes%60}m` : "--:--")}</span></div>
                         </div>
                     </div>
@@ -114,10 +115,28 @@ const EmployeeDashboardPage = () => {
                     </div>
                 </Card>
                 <Card compact className="group">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Leaves Used</p>
-                    <div className="flex items-end justify-between">
-                        <p className="text-4xl font-black text-rose-500">{stats.leaves}</p>
-                        <div className="text-right"><p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Balance</p><p className="text-lg font-black text-slate-900">14/15</p></div>
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Month Hours</p>
+                        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{monthlyHours.progressPercent}%</p>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="flex items-end justify-between gap-4">
+                            <div>
+                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Done</p>
+                                <p className="text-3xl font-black text-indigo-600">{monthlyHours.completedLabel}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Required</p>
+                                <p className="text-lg font-black text-slate-900">{monthlyHours.requiredLabel}</p>
+                            </div>
+                        </div>
+                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${monthlyHours.progressPercent}%` }}></div>
+                        </div>
+                        <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <span>{monthlyHours.workingDays} weekdays</span>
+                            <span>{monthlyHours.remainingLabel} left</span>
+                        </div>
                     </div>
                 </Card>
             </div>

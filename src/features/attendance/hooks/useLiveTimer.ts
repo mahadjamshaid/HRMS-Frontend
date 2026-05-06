@@ -11,7 +11,7 @@ export const useLiveTimer = (checkInTime: string | null | undefined) => {
 
         const calculate = () => {
             const start = new Date(checkInTime).getTime();
-            const now = new Date().getTime();
+            const now = Date.now();
             const diffMs = Math.max(0, now - start);
             setElapsedMinutes(Math.floor(diffMs / 60000));
         };

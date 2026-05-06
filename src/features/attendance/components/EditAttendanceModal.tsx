@@ -3,7 +3,7 @@ import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
 import { useCorrectAttendance } from "../hooks/useCorrectAttendance";
-import { formatForDateTimeLocal, toPKTDateString } from "../../../utils/dateUtils";
+import { dateTimeLocalToPKTISOString, formatForDateTimeLocal, toPKTDateString } from "../../../utils/dateUtils";
 import type { ChangeEvent, FormEvent } from "react";
 import type { AttendanceCorrectionPayload, EditAttendanceModalProps } from "../../../types/attendanceTypes";
 
@@ -83,10 +83,10 @@ const EditAttendanceModal = ({
     // Only include times if NOT admin override
     if (!form.adminStatus) {
       if (form.checkInTime) {
-        payload.checkInTime = new Date(form.checkInTime).toISOString();
+        payload.checkInTime = dateTimeLocalToPKTISOString(form.checkInTime);
       }
       if (form.checkOutTime) {
-        payload.checkOutTime = new Date(form.checkOutTime).toISOString();
+        payload.checkOutTime = dateTimeLocalToPKTISOString(form.checkOutTime);
       }
 
       // Time consistency check (Frontend Guard)

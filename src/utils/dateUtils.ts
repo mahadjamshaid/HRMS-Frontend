@@ -1,5 +1,8 @@
 // Centralized timezone configuration
 export const TIMEZONE = "Asia/Karachi"; // UTC+05:00
+const PKT_OFFSET_MINUTES = 5 * 60;
+
+const pad = (value: number): string => value.toString().padStart(2, "0");
 
 /**
  * Returns the current time as a PKT Date object.
@@ -13,7 +16,7 @@ export const getPKTNow = (): Date => {
  * Useful for consistent database querying across server and client timezones.
  */
 export const getTodayDateString = (): string => {
-    return toPKTDateString(getPKTNow());
+    return toPKTDateString(new Date());
 };
 
 /**
@@ -26,17 +29,6 @@ export const toPKTDateString = (date: Date | string): string => {
         month: '2-digit', 
         day: '2-digit' 
     }).format(new Date(date));
-};
-
-/**
- * Formats a Date object or string into a standard format based on the configured timezone.
- */
-export const formatTimeInTimezone = (dateStr: string | Date): string => {
-    return new Date(dateStr).toLocaleTimeString("en-US", {
-        timeZone: TIMEZONE,
-        hour: '2-digit',
-        minute: '2-digit'
-    });
 };
 
 export const getHeaderWeekday = (): string => {
@@ -104,3 +96,23 @@ export const formatForDateTimeLocal = (dateStr: string | Date | null | undefined
     return `${datePart}T${timePart}`;
 };
 
+/**
+ * Converts a datetime-local value selected as PKT wall time into a UTC ISO
+ * instant. This is independent of the browser's local timezone.
+ */
+export const dateTimeLocalToPKTISOString = (value: string): string => {
+    const [datePart, timePart] = value.split("T");
+    const [year, month, day] = datePart.split("-").map(Number);
+    const [hour = 0, minute = 0] = timePart.split(":").map(Number);
+
+    const utcMs = Date.UTC(year, month - 1, day, hour, minute) - (PKT_OFFSET_MINUTES * 60 * 1000);
+    return new Date(utcMs).toISOString();
+};
+
+export const formatMinutes = (minutes: number): string => {
+    const safeMinutes = Math.max(0, Math.floor(minutes));
+    const h = Math.floor(safeMinutes / 60);
+    const m = safeMinutes % 60;
+
+    return `${h}h ${pad(m)}m`;
+};

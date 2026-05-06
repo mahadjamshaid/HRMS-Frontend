@@ -3,7 +3,7 @@ import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import { correctAttendance } from "../api/attendance.api";
-import { toPKTDateString, getPKTNow } from "../../../utils/dateUtils";
+import { dateTimeLocalToPKTISOString, getTodayDateString } from "../../../utils/dateUtils";
 import type { AttendanceCorrectionPayload } from "../../../types/attendanceTypes";
 
 type ManualEntryModalProps = {
@@ -17,7 +17,7 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
     const [error, setError] = useState<string | null>(null);
     const [form, setForm] = useState({
         employeeId: "",
-        date: toPKTDateString(getPKTNow()),
+        date: getTodayDateString(),
         checkInTime: "",
         checkOutTime: "",
         adminStatus: "" as "" | "Absent" | "OnLeave",
@@ -38,10 +38,10 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
             // Only include times if NOT admin override
             if (!form.adminStatus) {
                 if (form.checkInTime) {
-                    payload.checkInTime = new Date(form.checkInTime).toISOString();
+                    payload.checkInTime = dateTimeLocalToPKTISOString(form.checkInTime);
                 }
                 if (form.checkOutTime) {
-                    payload.checkOutTime = new Date(form.checkOutTime).toISOString();
+                    payload.checkOutTime = dateTimeLocalToPKTISOString(form.checkOutTime);
                 }
 
                 // Time consistency check (Frontend Guard)
@@ -67,7 +67,7 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
             onClose();
             setForm({
                 employeeId: "",
-                date: toPKTDateString(getPKTNow()),
+                date: getTodayDateString(),
                 checkInTime: "",
                 checkOutTime: "",
                 adminStatus: "",
@@ -161,4 +161,3 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
 };
 
 export default ManualEntryModal;
-

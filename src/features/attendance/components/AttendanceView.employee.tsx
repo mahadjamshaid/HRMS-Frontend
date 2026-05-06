@@ -1,7 +1,7 @@
 import React from "react";
 import AttendanceTable from "./AttendanceTable";
 import WorkHoursWidget from "./WorkHoursWidget";
-import { formatTimeInTimezone, formatLongDate, formatWeekday } from "../../../utils/dateUtils";
+import { formatLongDate, formatWeekday } from "../../../utils/dateUtils";
 import Badge from "../../../components/Badge";
 import type { Column } from "../../../types/attendanceTableType";
 import type { AttendanceRecord, AttendanceViewEmployeeProps } from "../../../types/attendanceTypes";

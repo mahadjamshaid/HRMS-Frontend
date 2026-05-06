@@ -19,8 +19,8 @@ export type AttendanceRecord = {
   status: string;
   workMinutes: number | null;
   adminStatus?: string | null;
-  requiredWorkMinutes?: number;
-  checkoutGraceMinutes?: number;
+  requiredWorkMinutes?: number | null;
+  checkoutGraceMinutes?: number | null;
 };
 
 export type AdminAttendanceSummary = {
