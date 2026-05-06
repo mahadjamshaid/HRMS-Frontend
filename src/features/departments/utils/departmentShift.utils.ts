@@ -14,6 +14,8 @@ export const emptyShiftForm: ShiftFormValues = {
   endTime: "17:00",
   graceMinutes: "15",
   breakMinutes: "30",
+  requiredWorkMinutes: "480",
+  checkoutGraceMinutes: "15",
 };
 
 export const toTimeInput = (value?: string | null): string => {
@@ -104,6 +106,24 @@ export const analyzeShiftForm = (form: ShiftFormValues): ShiftAnalysis => {
     errors.breakMinutes = "Break minutes must be between 0 and 120";
   }
 
+  const requiredWorkMinutes = parseGraceMinutes(form.requiredWorkMinutes);
+  if (requiredWorkMinutes === null) {
+    errors.requiredWorkMinutes = form.requiredWorkMinutes.trim()
+      ? "Required work minutes must be a valid whole number"
+      : "Required work minutes is required";
+  } else if (requiredWorkMinutes < 240 || requiredWorkMinutes > 960) {
+    errors.requiredWorkMinutes = "Required work minutes must be between 240 and 960";
+  }
+
+  const checkoutGraceMinutes = parseGraceMinutes(form.checkoutGraceMinutes);
+  if (checkoutGraceMinutes === null) {
+    errors.checkoutGraceMinutes = form.checkoutGraceMinutes.trim()
+      ? "Checkout grace minutes must be a valid whole number"
+      : "Checkout grace minutes is required";
+  } else if (checkoutGraceMinutes < 0 || checkoutGraceMinutes > 60) {
+    errors.checkoutGraceMinutes = "Checkout grace minutes must be between 0 and 60";
+  }
+
 
   return {
     valid: Object.keys(errors).length === 0,
@@ -126,6 +146,8 @@ export const toAssignDepartmentShiftPayload = (form: ShiftFormValues): AssignDep
   endTime: form.endTime,
   graceMinutes: getValidGraceMinutes(form.graceMinutes),
   breakMinutes: Number(form.breakMinutes) || 0,
+  requiredWorkMinutes: Number(form.requiredWorkMinutes) || 480,
+  checkoutGraceMinutes: Number(form.checkoutGraceMinutes) || 15,
 });
 
 export const toCreateDepartmentPayload = (form: CreateDepartmentFormValues): CreateDepartmentPayload => ({
@@ -135,6 +157,8 @@ export const toCreateDepartmentPayload = (form: CreateDepartmentFormValues): Cre
   endTime: form.endTime,
   graceMinutes: getValidGraceMinutes(form.graceMinutes),
   breakMinutes: Number(form.breakMinutes) || 0,
+  requiredWorkMinutes: Number(form.requiredWorkMinutes) || 480,
+  checkoutGraceMinutes: Number(form.checkoutGraceMinutes) || 15,
 });
 
 export const getShiftFormFromDepartment = (department?: Department | null): ShiftFormValues => ({
@@ -142,6 +166,8 @@ export const getShiftFormFromDepartment = (department?: Department | null): Shif
   endTime: toTimeInput(department?.assignedShift?.endTime) || emptyShiftForm.endTime,
   graceMinutes: String(department?.assignedShift?.graceMinutes ?? emptyShiftForm.graceMinutes),
   breakMinutes: String(department?.assignedShift?.breakMinutes ?? emptyShiftForm.breakMinutes),
+  requiredWorkMinutes: String(department?.assignedShift?.requiredWorkMinutes ?? emptyShiftForm.requiredWorkMinutes),
+  checkoutGraceMinutes: String(department?.assignedShift?.checkoutGraceMinutes ?? emptyShiftForm.checkoutGraceMinutes),
 });
 
 export const getApiMessage = (response: ApiResponse<unknown> | undefined, fallback: string): string => {

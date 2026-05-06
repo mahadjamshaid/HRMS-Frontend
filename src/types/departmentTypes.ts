@@ -6,6 +6,8 @@ export type DepartmentShift = {
   endTime: string;
   graceMinutes: number;
   breakMinutes: number;
+  requiredWorkMinutes: number;
+  checkoutGraceMinutes: number;
   durationMinutes?: number;
   isOvernight?: boolean;
 };
@@ -27,6 +29,8 @@ export type CreateDepartmentPayload = {
   endTime: string;
   graceMinutes: number;
   breakMinutes: number;
+  requiredWorkMinutes: number;
+  checkoutGraceMinutes: number;
 };
 
 export type UpdateDepartmentPayload = {
@@ -39,6 +43,8 @@ export type AssignDepartmentShiftPayload = {
   endTime: string;
   graceMinutes: number;
   breakMinutes: number;
+  requiredWorkMinutes: number;
+  checkoutGraceMinutes: number;
 };
 
 export type ShiftFormValues = {
@@ -46,6 +52,8 @@ export type ShiftFormValues = {
   endTime: string;
   graceMinutes: string;
   breakMinutes: string;
+  requiredWorkMinutes: string;
+  checkoutGraceMinutes: string;
 };
 
 export type CreateDepartmentFormValues = ShiftFormValues & {

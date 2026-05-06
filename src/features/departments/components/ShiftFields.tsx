@@ -37,6 +37,31 @@ const ShiftFields = ({ form, onChange, errors = {} }: ShiftFieldsProps) => {
         />
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <Input
+          label="Required Work Minutes"
+          type="number"
+          min="240"
+          max="960"
+          name="requiredWorkMinutes"
+          value={form.requiredWorkMinutes}
+          onChange={onChange}
+          error={errors.requiredWorkMinutes}
+          required
+        />
+        <Input
+          label="Checkout Grace Minutes"
+          type="number"
+          min="0"
+          max="60"
+          name="checkoutGraceMinutes"
+          value={form.checkoutGraceMinutes}
+          onChange={onChange}
+          error={errors.checkoutGraceMinutes}
+          required
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
         <Input
           label="Break Minutes"
