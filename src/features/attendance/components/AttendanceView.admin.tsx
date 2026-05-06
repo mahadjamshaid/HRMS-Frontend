@@ -23,12 +23,12 @@ const AttendanceViewAdmin = ({ data, loading, page = 1, totalPages, onPageChange
         {
             header: "Check In",
             cellClassName: "text-sm font-black text-slate-900",
-            render: (record) => record.checkInTime ? new Date(record.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'
+            render: (record) => record.checkInTime || '-'
         },
         {
             header: "Check Out",
             cellClassName: "text-sm font-black text-slate-900",
-            render: (record) => record.checkOutTime ? new Date(record.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'
+            render: (record) => record.checkOutTime || '-'
         },
         {
             header: "Status",

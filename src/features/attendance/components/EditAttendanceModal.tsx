@@ -32,8 +32,8 @@ const EditAttendanceModal = ({
 
     const timer = setTimeout(() => {
       setForm({
-        checkInTime: formatForDateTimeLocal(record.checkInTime),
-        checkOutTime: formatForDateTimeLocal(record.checkOutTime),
+        checkInTime: formatForDateTimeLocal(record.checkInTimeRaw || record.checkInTime),
+        checkOutTime: formatForDateTimeLocal(record.checkOutTimeRaw || record.checkOutTime),
         adminStatus: (record.status === "Absent" || record.status === "OnLeave") ? record.status : "",
       });
       setLocalError(null);

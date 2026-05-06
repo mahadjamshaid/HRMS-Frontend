@@ -1,7 +1,7 @@
 import React from "react";
 import type { WorkHoursWidgetProps } from "../../../types/attendanceTypes";
 
-const WorkHoursWidget = ({ checkInTime, checkOutTime, workMinutes }: WorkHoursWidgetProps & { workMinutes?: number | null }) => {
+const WorkHoursWidget = ({ checkInTime, checkOutTime, checkInTimeRaw, checkOutTimeRaw, workMinutes }: WorkHoursWidgetProps & { workMinutes?: number | null, checkInTimeRaw?: string | null, checkOutTimeRaw?: string | null }) => {
     let hoursStr = "-";
     let progressPercent = 0;
 
@@ -10,9 +10,10 @@ const WorkHoursWidget = ({ checkInTime, checkOutTime, workMinutes }: WorkHoursWi
         const diffMins = workMinutes % 60;
         hoursStr = `${diffHrs}h ${diffMins}m`;
         progressPercent = Math.min((workMinutes / (8 * 60)) * 100, 100);
-    } else if (checkInTime && checkOutTime) {
-        const checkIn = new Date(checkInTime);
-        const checkOut = new Date(checkOutTime);
+    } else if (checkInTimeRaw && checkOutTimeRaw) {
+        // Fallback for real-time math using RAW ISO strings
+        const checkIn = new Date(checkInTimeRaw);
+        const checkOut = new Date(checkOutTimeRaw);
         const diffMs = checkOut.getTime() - checkIn.getTime();
         const diffMinsTotal = Math.floor(diffMs / 60000);
         const diffHrs = Math.floor(diffMinsTotal / 60);

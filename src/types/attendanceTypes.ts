@@ -5,16 +5,22 @@ export type AttendanceStatus = "Present" | "Late" | "HalfDay" | "ShortDay" | "Ab
 
 export type AttendanceRecord = {
   id?: number;
-  employeeId?: number;
+  employeeId: number;
   employeeName?: string;
-  employeeDepartment?: string;
-  attendanceDate: string; // New PKT Date field
-  checkInTime?: string | null;
-  checkOutTime?: string | null;
-  status: AttendanceStatus;
-  workMinutes?: number | null; // Stored work duration
-  createdAt?: string;
-  updatedAt?: string;
+  employeeDepartment?: number;
+  attendanceDate: string;
+  date?: string; // Legacy
+  // Phase 4: Strictly strings from backend (Formatted PKT)
+  checkInTime: string | null;
+  checkOutTime: string | null;
+  // Phase 6: Raw ISO strings for Edit Modal
+  checkInTimeRaw?: string | null;
+  checkOutTimeRaw?: string | null;
+  status: string;
+  workMinutes: number | null;
+  adminStatus?: string | null;
+  requiredWorkMinutes?: number;
+  checkoutGraceMinutes?: number;
 };
 
 export type AdminAttendanceSummary = {

@@ -30,9 +30,9 @@ const AttendanceViewEmployee = ({
             header: "In / Out",
             render: (record) => (
                 <div className="flex items-center gap-3">
-                    <span className="text-sm font-black text-slate-900">{record.checkInTime ? formatTimeInTimezone(record.checkInTime) : "--:--"}</span>
+                    <span className="text-sm font-black text-slate-900">{record.checkInTime || "--:--"}</span>
                     <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    <span className="text-sm font-black text-slate-900">{record.checkOutTime ? formatTimeInTimezone(record.checkOutTime) : "--:--"}</span>
+                    <span className="text-sm font-black text-slate-900">{record.checkOutTime || "--:--"}</span>
                 </div>
             )
         },
@@ -55,7 +55,13 @@ const AttendanceViewEmployee = ({
             header: "Work Hours",
             className: "text-right",
             cellClassName: "text-right",
-            render: (record) => <WorkHoursWidget checkInTime={record.checkInTime} checkOutTime={record.checkOutTime} workMinutes={record.workMinutes} />
+            render: (record) => <WorkHoursWidget 
+                checkInTime={record.checkInTime} 
+                checkOutTime={record.checkOutTime} 
+                checkInTimeRaw={record.checkInTimeRaw}
+                checkOutTimeRaw={record.checkOutTimeRaw}
+                workMinutes={record.workMinutes} 
+            />
         }
     ];
 
