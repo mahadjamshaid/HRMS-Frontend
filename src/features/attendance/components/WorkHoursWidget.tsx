@@ -12,14 +12,21 @@ const WorkHoursWidget = ({ checkInTime, checkOutTime, checkInTimeRaw, checkOutTi
         progressPercent = Math.min((workMinutes / (8 * 60)) * 100, 100);
     } else if (checkInTimeRaw && checkOutTimeRaw) {
         // Fallback for real-time math using RAW ISO strings
-        const checkIn = new Date(checkInTimeRaw);
-        const checkOut = new Date(checkOutTimeRaw);
-        const diffMs = checkOut.getTime() - checkIn.getTime();
-        const diffMinsTotal = Math.floor(diffMs / 60000);
-        const diffHrs = Math.floor(diffMinsTotal / 60);
-        const diffMins = diffMinsTotal % 60;
-        hoursStr = `${diffHrs}h ${diffMins}m`;
-        progressPercent = Math.min((diffMinsTotal / (8 * 60)) * 100, 100);
+        try {
+            const checkIn = new Date(checkInTimeRaw);
+            const checkOut = new Date(checkOutTimeRaw);
+            
+            if (!isNaN(checkIn.getTime()) && !isNaN(checkOut.getTime())) {
+                const diffMs = checkOut.getTime() - checkIn.getTime();
+                const diffMinsTotal = Math.floor(diffMs / 60000);
+                const diffHrs = Math.floor(diffMinsTotal / 60);
+                const diffMins = diffMinsTotal % 60;
+                hoursStr = `${diffHrs}h ${diffMins}m`;
+                progressPercent = Math.min((diffMinsTotal / (8 * 60)) * 100, 100);
+            }
+        } catch {
+            hoursStr = "-";
+        }
     }
 
     return (

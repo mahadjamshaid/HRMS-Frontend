@@ -47,20 +47,34 @@ export const getHeaderFullDate = (): string => {
     return new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, month: 'short', day: 'numeric', year: 'numeric' }).format(new Date());
 };
 
-export const formatLongDate = (dateStr: string | Date): string => {
-    return new Intl.DateTimeFormat('en-US', { 
-        timeZone: TIMEZONE, 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric' 
-    }).format(new Date(dateStr));
+export const formatLongDate = (dateStr: string | Date | null | undefined): string => {
+    if (!dateStr) return "-";
+    try {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return "-";
+        return new Intl.DateTimeFormat('en-US', { 
+            timeZone: TIMEZONE, 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+        }).format(date);
+    } catch {
+        return "-";
+    }
 };
 
-export const formatWeekday = (dateStr: string | Date): string => {
-    return new Intl.DateTimeFormat('en-US', { 
-        timeZone: TIMEZONE, 
-        weekday: 'long' 
-    }).format(new Date(dateStr));
+export const formatWeekday = (dateStr: string | Date | null | undefined): string => {
+    if (!dateStr) return "-";
+    try {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return "-";
+        return new Intl.DateTimeFormat('en-US', { 
+            timeZone: TIMEZONE, 
+            weekday: 'long' 
+        }).format(date);
+    } catch {
+        return "-";
+    }
 };
 
 /**
