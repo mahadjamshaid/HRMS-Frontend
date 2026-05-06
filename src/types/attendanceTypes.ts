@@ -37,8 +37,8 @@ export type AttendanceRecordsPage = {
 export type AttendanceCorrectionPayload = {
   employeeId: number;
   date: string;
-  checkInTime?: string | null;
-  checkOutTime?: string | null;
+  checkInTime?: string;
+  checkOutTime?: string;
   adminStatus?: "Absent" | "OnLeave";
   reason?: string;
 };

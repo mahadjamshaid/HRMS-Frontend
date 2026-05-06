@@ -3,6 +3,7 @@ import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import { correctAttendance } from "../api/attendance.api";
+import { toPKTDateString, getPKTNow } from "../../../utils/dateUtils";
 import type { AttendanceCorrectionPayload } from "../../../types/attendanceTypes";
 
 type ManualEntryModalProps = {
@@ -16,7 +17,7 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
     const [error, setError] = useState<string | null>(null);
     const [form, setForm] = useState({
         employeeId: "",
-        date: new Date().toISOString().split('T')[0],
+        date: toPKTDateString(getPKTNow()),
         checkInTime: "",
         checkOutTime: "",
         adminStatus: "" as "" | "Absent" | "OnLeave",
@@ -30,15 +31,21 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
         try {
             const payload: AttendanceCorrectionPayload = {
                 employeeId: Number(form.employeeId),
-                date: form.date,
-                checkInTime: form.checkInTime ? new Date(form.checkInTime).toISOString() : null,
-                checkOutTime: form.checkOutTime ? new Date(form.checkOutTime).toISOString() : null,
+                date: form.date, // Already in YYYY-MM-DD from state/input
                 adminStatus: form.adminStatus || undefined,
             };
 
-            // Safety check for empty strings
-            if (form.checkInTime === "") payload.checkInTime = null;
-            if (form.checkOutTime === "") payload.checkOutTime = null;
+            // Only include times if NOT admin override
+            if (!form.adminStatus) {
+                if (form.checkInTime) {
+                    payload.checkInTime = new Date(form.checkInTime).toISOString();
+                }
+                if (form.checkOutTime) {
+                    payload.checkOutTime = new Date(form.checkOutTime).toISOString();
+                }
+            }
+
+            console.log("MANUAL CORRECTION PAYLOAD:", payload);
 
             const res = await correctAttendance(payload);
 
@@ -51,7 +58,7 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
             onClose();
             setForm({
                 employeeId: "",
-                date: new Date().toISOString().split('T')[0],
+                date: toPKTDateString(getPKTNow()),
                 checkInTime: "",
                 checkOutTime: "",
                 adminStatus: "",

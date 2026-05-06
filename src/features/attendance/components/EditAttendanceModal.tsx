@@ -3,7 +3,7 @@ import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
 import { useCorrectAttendance } from "../hooks/useCorrectAttendance";
-import { formatForDateTimeLocal } from "../../../utils/dateUtils";
+import { formatForDateTimeLocal, toPKTDateString } from "../../../utils/dateUtils";
 import type { ChangeEvent, FormEvent } from "react";
 import type { AttendanceCorrectionPayload, EditAttendanceModalProps } from "../../../types/attendanceTypes";
 
@@ -66,34 +66,41 @@ const EditAttendanceModal = ({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!record?.employeeId || !record?.attendanceDate) {
-        setLocalError("Missing employee or date context");
-        return;
+      setLocalError("Missing employee or date context");
+      return;
     }
 
-    // Construct unified correction payload (STRICT: no 'status' field)
+    const formattedDate = toPKTDateString(record.attendanceDate);
+
     const payload: AttendanceCorrectionPayload = {
-        employeeId: record.employeeId,
-        date: record.attendanceDate,
-        checkInTime: form.checkInTime ? new Date(form.checkInTime).toISOString() : null,
-        checkOutTime: form.checkOutTime ? new Date(form.checkOutTime).toISOString() : null,
-        adminStatus: form.adminStatus || undefined,
+      employeeId: record.employeeId,
+      date: formattedDate,
+      adminStatus: form.adminStatus || undefined,
     };
-    
-    // Safety check: filter out empty strings before they become "Invalid Date"
-    if (form.checkInTime === "") payload.checkInTime = null;
-    if (form.checkOutTime === "") payload.checkOutTime = null;
+
+    // Only include times if NOT admin override
+    if (!form.adminStatus) {
+      if (form.checkInTime) {
+        payload.checkInTime = new Date(form.checkInTime).toISOString();
+      }
+      if (form.checkOutTime) {
+        payload.checkOutTime = new Date(form.checkOutTime).toISOString();
+      }
+    }
+
+    console.log("CORRECTION PAYLOAD:", payload);
 
     const res = await correct(payload);
 
     if (res?.success) {
-        onSuccess();
-        onClose();
+      onSuccess();
+      onClose();
     } else {
-        setLocalError(res?.error || "Correction failed");
+      setLocalError(res?.error || "Correction failed");
     }
-};
+  };
 
   return (
     <Modal

@@ -2,16 +2,30 @@
 export const TIMEZONE = "Asia/Karachi"; // UTC+05:00
 
 /**
+ * Returns the current time as a PKT Date object.
+ */
+export const getPKTNow = (): Date => {
+    return new Date(new Date().toLocaleString("en-US", { timeZone: TIMEZONE }));
+};
+
+/**
  * Returns today's date formatted as YYYY-MM-DD in the configured timezone.
  * Useful for consistent database querying across server and client timezones.
  */
 export const getTodayDateString = (): string => {
+    return toPKTDateString(getPKTNow());
+};
+
+/**
+ * Converts a date into YYYY-MM-DD format in the configured timezone (PKT).
+ */
+export const toPKTDateString = (date: Date | string): string => {
     return new Intl.DateTimeFormat('en-CA', { 
         timeZone: TIMEZONE, 
         year: 'numeric', 
         month: '2-digit', 
         day: '2-digit' 
-    }).format(new Date());
+    }).format(new Date(date));
 };
 
 /**
