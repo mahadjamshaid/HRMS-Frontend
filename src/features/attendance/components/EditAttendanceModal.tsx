@@ -88,6 +88,14 @@ const EditAttendanceModal = ({
       if (form.checkOutTime) {
         payload.checkOutTime = new Date(form.checkOutTime).toISOString();
       }
+
+      // Time consistency check (Frontend Guard)
+      if (payload.checkInTime && payload.checkOutTime) {
+        if (new Date(payload.checkOutTime) <= new Date(payload.checkInTime)) {
+          setLocalError("Check-out time must be after check-in time");
+          return;
+        }
+      }
     }
 
     console.log("CORRECTION PAYLOAD:", payload);

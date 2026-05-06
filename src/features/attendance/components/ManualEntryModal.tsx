@@ -43,6 +43,15 @@ const ManualEntryModal = ({ isOpen, onClose, onSuccess }: ManualEntryModalProps)
                 if (form.checkOutTime) {
                     payload.checkOutTime = new Date(form.checkOutTime).toISOString();
                 }
+
+                // Time consistency check (Frontend Guard)
+                if (payload.checkInTime && payload.checkOutTime) {
+                    if (new Date(payload.checkOutTime) <= new Date(payload.checkInTime)) {
+                        setError("Check-out time must be after check-in time");
+                        setLoading(false);
+                        return;
+                    }
+                }
             }
 
             console.log("MANUAL CORRECTION PAYLOAD:", payload);
