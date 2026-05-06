@@ -178,7 +178,7 @@ function Login() {
 
           <p className="auth-footer">
             New to xNerds?{" "}
-            <Link to="/signup" className="auth-footer-link">Create free account</Link>
+            <Link to="/signup" className="auth-footer-link">Create account</Link>
           </p>
         </div>
       </div>
