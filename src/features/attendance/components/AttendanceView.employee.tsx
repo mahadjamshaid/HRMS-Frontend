@@ -27,14 +27,14 @@ const AttendanceViewEmployee = ({
             )
         },
         {
-            header: "In / Out",
-            render: (record) => (
-                <div className="flex items-center gap-3">
-                    <span className="text-sm font-black text-slate-900">{record.checkInTime || "--:--"}</span>
-                    <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    <span className="text-sm font-black text-slate-900">{record.checkOutTime || "--:--"}</span>
-                </div>
-            )
+            header: "Check In",
+            cellClassName: "text-sm font-black text-slate-900",
+            render: (record) => record.checkInTime || "--:--"
+        },
+        {
+            header: "Check Out",
+            cellClassName: "text-sm font-black text-slate-900",
+            render: (record) => record.checkOutTime || "--:--"
         },
         {
             header: "Status",
